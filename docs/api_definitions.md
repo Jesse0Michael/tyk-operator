@@ -107,3 +107,7 @@ Here is the list of supported middleware that you can apply at the endpoint leve
 | [Transform - URL Rewrite](#) | ⚠️ |
 | [Validate - JSON Schema](../config/samples/httpbin_validate.yaml) | [❌️](https://github.com/TykTechnologies/tyk-operator/issues/59) |
 | [Validate - Limit Request Size](../config/samples/httpbin_validate.yaml) | [❌️](https://github.com/TykTechnologies/tyk-operator/issues/59) |
+
+## TLS & Certificate Management
+
+[TLS Configuration & Integration with Cert Manager](./api_definitions/tls.md)
