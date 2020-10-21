@@ -192,8 +192,8 @@ spec:
               certificates:
                 description: // +optional CORS              CORS     `json:"CORS"`
                   Domain            string   `json:"domain"` Certificates is a list
-                  of Tyk Certificate IDs. e.g. mongo id. Use CertificateNames if using
-                  cert-manager
+                  of Tyk Certificate IDs. e.g. orgid+fingerprint. Use CertificateSecretNames
+                  if using cert-manager
                 items:
                   type: string
                 type: array
