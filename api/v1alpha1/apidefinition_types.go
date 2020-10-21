@@ -431,7 +431,11 @@ type APIDefinitionSpec struct {
 	//// +optional
 	//CORS              CORS     `json:"CORS"`
 	//Domain            string   `json:"domain"`
-	//Certificates      []string `json:"certificates"`
+	// Certificates is a list of Tyk Certificate IDs. e.g. mongo id. Use CertificateNames if using cert-manager
+	Certificates []string `json:"certificates,omitempty"`
+	// CertificateSecretNames represents the names of the secrets that the controller should look for in the in the current
+	// namespace which contain the certificates.
+	CertificateSecretNames []string `json:"certificate_secret_names,omitempty"`
 	//DoNotTrack        bool     `json:"do_not_track"`
 	//Tags              []string `json:"tags"`
 	//EnableContextVars bool     `json:"enable_context_vars"`
@@ -440,8 +444,7 @@ type APIDefinitionSpec struct {
 	//GlobalRateLimit         GlobalRateLimit `json:"global_rate_limit"`
 	//StripAuthData           bool            `json:"strip_auth_data"`
 	//EnableDetailedRecording bool            `json:"enable_detailed_recording"`
-
-	GraphQL GraphQLConfig `json:"graphql,omitempty"`
+	GraphQL *GraphQLConfig `json:"graphql,omitempty"`
 }
 
 // Proxy outlines the API proxying functionality.
