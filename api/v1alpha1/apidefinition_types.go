@@ -354,8 +354,10 @@ type APIDefinitionSpec struct {
 	// Proxy
 	Proxy Proxy `json:"proxy"`
 	// +optional
-	ListenPort int    `json:"listen_port"`
-	Protocol   string `json:"protocol"`
+	ListenPort int `json:"listen_port"`
+	// +kubebuilder:validation:Enum=http;https;tcp;tls
+	// +optional
+	Protocol string `json:"protocol"`
 
 	// use_keyless will switch off all key checking. Some analytics will still be recorded, but rate-limiting,
 	// quotas and security policies will not be possible (there is no session to attach requests to).

@@ -18,8 +18,12 @@ package controllers
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"reflect"
 	"time"
+
+	v1 "k8s.io/api/core/v1"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
@@ -122,6 +126,29 @@ func (r *ApiDefinitionReconciler) Reconcile(req ctrl.Request) (ctrl.Result, erro
 		return reconcile.Result{}, client.IgnoreNotFound(err)
 	}
 
+	for _, certID := range desired.Spec.CertificateSecretNames {
+		secret := v1.Secret{}
+		err := r.Get(ctx, types.NamespacedName{Name: certID, Namespace: namespacedName.Namespace}, &secret)
+		if err != nil {
+			log.Error(err, "requeueing because secret not found")
+			return reconcile.Result{}, err
+		}
+
+		cert, ok := secret.Data["tls.crt"]
+		println(string(cert))
+		if !ok {
+			log.Error(err, "requeueing because cert not found in secret")
+			return reconcile.Result{}, err
+		}
+
+		tykCertID := universal_client.GetOrganizationID(r.UniversalClient) + r.generateCertId(cert)
+		_, err = universal_client.GetCertificate(r.UniversalClient, tykCertID)
+
+		desired.Spec.Certificates = append(desired.Spec.Certificates, tykCertID)
+	}
+
+	desired.Spec.CertificateSecretNames = nil
+
 	r.applyDefaults(&desired.Spec)
 
 	//  If this is not set, means it is a new object, set it first
@@ -187,6 +214,11 @@ func (r *ApiDefinitionReconciler) Reconcile(req ctrl.Request) (ctrl.Result, erro
 	}
 
 	return ctrl.Result{}, nil
+}
+
+func (r *ApiDefinitionReconciler) generateCertId(cert []byte) string {
+	certSHA := sha256.Sum256(cert)
+	return hex.EncodeToString(certSHA[:])
 }
 
 func (r *ApiDefinitionReconciler) ensureIngress(ctx context.Context, log logr.Logger, desired *v1beta1.Ingress) (reconcile.Result, error) {

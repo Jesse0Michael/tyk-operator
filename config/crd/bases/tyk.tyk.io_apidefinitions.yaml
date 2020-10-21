@@ -393,6 +393,11 @@ spec:
                 description: OrgID is overwritten - no point setting this
                 type: string
               protocol:
+                enum:
+                - http
+                - https
+                - tcp
+                - tls
                 type: string
               proxy:
                 description: Proxy
@@ -1127,7 +1132,6 @@ spec:
                 type: object
             required:
             - name
-            - protocol
             - proxy
             type: object
           status:
