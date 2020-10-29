@@ -378,6 +378,10 @@ spec:
             id:
               description: For server use only, do not use
               type: string
+            internal:
+              description: Internal tells Tyk Gateway that this is a virtual API.
+                It can only be routed to from other APIs.
+              type: boolean
             listen_port:
               type: integer
             name:
